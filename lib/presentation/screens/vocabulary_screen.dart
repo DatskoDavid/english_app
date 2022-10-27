@@ -16,7 +16,7 @@ class VocabularyScreen extends StatefulWidget {
 }
 
 class _VocabularyScreenState extends State<VocabularyScreen> {
-  final String baseUrl =
+  static const baseUrl =
       'https://www.oxfordlearnersdictionaries.com/definition/english/';
 
   String currentUrl(String word) => baseUrl + word;
@@ -84,7 +84,7 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
                   ),
                   title: Text(currentWord.word ?? ''),
                   subtitle: InkWell(
-                    onTap: () => launchUrl(
+                    onDoubleTap: () => launchUrl(
                       Uri.parse(
                         currentUrl(currentWord.word ?? baseUrl),
                       ),
@@ -100,11 +100,15 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.chrome_reader_mode_outlined),
-                    onPressed: () => launchUrl(
-                      Uri.parse(
-                        currentUrl(currentWord.word ?? baseUrl),
-                      ),
-                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) {
+                            return WordInfoScreen(word: currentWord.word!);
+                          },
+                        ),
+                      );
+                    },
                   ),
                   onTap: () {
                     Navigator.of(context).push(

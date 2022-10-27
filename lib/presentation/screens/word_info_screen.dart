@@ -34,80 +34,92 @@ class _WordInfoScreenState extends State<WordInfoScreen> {
           if (snapshot.hasData) {
             return LayoutBuilder(
               builder: (context, constraints) {
-                return Padding(
-                  padding: EdgeInsets.all(constraints.maxHeight * 0.02),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: constraints.maxHeight * 0.5,
-                        padding: EdgeInsets.all(constraints.maxHeight * 0.02),
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: Center(
-                                child: Image.asset(
-                                  'assets/images/balancing-stones.jpg',
+                return Scaffold(
+                  body: Padding(
+                    padding: EdgeInsets.all(constraints.maxHeight * 0.02),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: constraints.maxHeight * 0.5,
+                          padding: EdgeInsets.all(constraints.maxHeight * 0.02),
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 5,
+                                child: Center(
+                                  child: Image.asset(
+                                    'assets/images/balancing-stones.jpg',
+                                  ),
                                 ),
                               ),
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
+                              Row(
+                                children: [
+                                  Text(
                                     snapshot.data!.word,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20,
                                     ),
                                   ),
-                                ),
-                                const IconButton(
-                                  icon: Icon(Icons.volume_up_outlined),
-                                  onPressed: null,
-                                ),
-                              ],
-                            ),
-                            Text(
-                              '[ ${snapshot.data!.pronunciation} ]',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontStyle: FontStyle.italic,
+                                  // const Spacer(),
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 5.0),
+                                    child: IconButton(
+                                      icon: Icon(Icons.volume_up_outlined),
+                                      onPressed: null,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: constraints.maxHeight * 0.38,
-                        child: ListView.builder(
-                          // physics: const NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data!.results.length,
-                          itemBuilder: (_, index) => WordDefinitionCard(
-                            result: snapshot.data!.results[index],
+                              Text(
+                                '[ ${snapshot.data!.pronunciation} ]',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+                        SizedBox(
+                          height: constraints.maxHeight * 0.46,
+                          child: ListView.builder(
+                            // physics: const NeverScrollableScrollPhysics(),
+                            itemCount: snapshot.data!.results.length,
+                            itemBuilder: (_, index) => WordDefinitionCard(
+                              result: snapshot.data!.results[index],
+                            ),
+                            padding: EdgeInsets.only(
+                                bottom: constraints.maxHeight * 0.05),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.centerFloat,
+                  floatingActionButton: SizedBox(
+                    height: constraints.maxHeight * 0.07,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) {
+                                return const QuizScreen();
+                              },
+                            ),
+                          );
+                        },
+                        child: const Text('Go study'),
                       ),
-                      SizedBox(
-                        height: constraints.maxHeight * 0.07,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) {
-                                    return const QuizScreen();
-                                  },
-                                ),
-                              );
-                            },
-                            child: const Text('Go study')),
-                      )
-                    ],
+                    ),
                   ),
                 );
               },

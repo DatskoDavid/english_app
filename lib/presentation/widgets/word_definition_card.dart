@@ -10,10 +10,9 @@ class WordDefinitionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 4,
       child: ListTile(
         leading: Container(
-          /* constraints:
-              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.2), */
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.blueAccent,
