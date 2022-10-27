@@ -14,12 +14,12 @@ class WordInfoScreen extends StatefulWidget {
 }
 
 class _WordInfoScreenState extends State<WordInfoScreen> {
-  late Future<Word> word;
+  late final wordService = WordService(widget.word);
+  late Future<Word> wordFromNetwork = wordService.fetchWords();
 
   @override
   void initState() {
     super.initState();
-    word = fetchWords();
   }
 
   @override
@@ -29,7 +29,7 @@ class _WordInfoScreenState extends State<WordInfoScreen> {
         title: const Text('About word'),
       ),
       body: FutureBuilder<Word>(
-        future: word,
+        future: wordFromNetwork,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return LayoutBuilder(

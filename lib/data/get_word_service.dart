@@ -53,14 +53,11 @@ class Result {
   factory Result.fromJson(Map<String, dynamic> json) {
     /* final examplesJson = json['examples'];
     final examplesList = examplesJson.cast<String>() as List; */
-    // final exmpl = ['vdfv', 'dvdv'];
 
     return Result(
       partOfSpeech: json['partOfSpeech'] as String,
       definition: json['definition'] as String,
-      // examples: exmpl,
-      // examples: json['examples'] as List<String>,
-      // examples: (examplesList.isNotEmpty ? examplesList : ['no value']) as List<String>,
+      // examples: examplesList,
     );
   }
 
@@ -71,23 +68,30 @@ class Result {
       };
 }
 
-Future<Word> fetchWords() async {
-  const url = 'https://wordsapiv1.p.rapidapi.com/words/example';
-  final response = await http.get(
-    Uri.parse(url),
-    headers: {
-      'X-RapidAPI-Key': '72d92e3a98mshcc5811077a6c5c2p1d4945jsn76d2c4b4e5fd',
-      'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
-    },
-  );
+class WordService {
+  final String word;
 
-  if (response.statusCode == 200) {
-    return Word.fromJson(json.decode(response.body));
-  } else {
-    throw Exception('Error: ${response.reasonPhrase}');
+  WordService(this.word);
+
+  Future<Word> fetchWords() async {
+    const baseUrl = 'https://wordsapiv1.p.rapidapi.com/words/';
+    final requestUrl = baseUrl + word;
+
+    final response = await http.get(
+      Uri.parse(requestUrl),
+      headers: {
+        'X-RapidAPI-Key': '72d92e3a98mshcc5811077a6c5c2p1d4945jsn76d2c4b4e5fd',
+        'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return Word.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Error: ${response.reasonPhrase}');
+    }
   }
 }
-
 
 /* const options = {
   method: 'GET',
