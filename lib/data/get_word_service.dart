@@ -42,10 +42,7 @@ class Word {
 class Result {
   final String partOfSpeech;
   final String definition;
-  // final List<String> examples;
-
-  // TO DO: convert example to list
-  // final String example;
+  // final List<String?> examples;
 
   Result({
     required this.partOfSpeech,
@@ -55,14 +52,15 @@ class Result {
 
   factory Result.fromJson(Map<String, dynamic> json) {
     /* final examplesJson = json['examples'];
-    final examplesList = examplesJson.cast<String>() ?? ['null'];
- */
+    final examplesList = examplesJson.cast<String>() as List; */
+    // final exmpl = ['vdfv', 'dvdv'];
+
     return Result(
       partOfSpeech: json['partOfSpeech'] as String,
       definition: json['definition'] as String,
+      // examples: exmpl,
       // examples: json['examples'] as List<String>,
-      // examples: examplesList,
-      //examples: examplesList,
+      // examples: (examplesList.isNotEmpty ? examplesList : ['no value']) as List<String>,
     );
   }
 
@@ -72,16 +70,6 @@ class Result {
         //'example': examples,
       };
 }
-
-/* class Example {
-  final String example;
-
-  Example({required this.example});
-
-  factory Example.fromJson(String exmpl) {
-    return Example(example: exmpl);
-  }
-} */
 
 Future<Word> fetchWords() async {
   const url = 'https://wordsapiv1.p.rapidapi.com/words/example';

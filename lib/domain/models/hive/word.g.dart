@@ -17,9 +17,9 @@ class WordAdapter extends TypeAdapter<Word> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Word(
-      id: fields[0] == null ? '0' : fields[0] as String?,
-      word: fields[1] == null ? 'word' : fields[1] as String?,
-      isFavourite: fields[2] == null ? false : fields[2] as bool?,
+      id: fields[0] as String?,
+      word: fields[1] as String?,
+      isFavourite: fields[2] as bool?,
     );
   }
 

@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:english_app/presentation/screens/word_info_screen.dart';
-import 'package:english_app/presentation/widgets/add_word_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../domain/models/word.dart';
+import '../../domain/models/hive/word.dart';
+import '../widgets/add_word_dialog.dart';
+import 'word_info_screen.dart';
 
 class VocabularyScreen extends StatefulWidget {
   const VocabularyScreen({Key? key}) : super(key: key);
@@ -29,6 +29,7 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
       ),
       body: ValueListenableBuilder(
         valueListenable: Hive.box<Word>('words_box').listenable(),
+        // ignore: avoid_types_on_closure_parameters
         builder: (context, Box<Word> box, _) {
           if (box.values.isEmpty) {
             return const Center(
@@ -76,7 +77,7 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
                           )
                         : const Icon(Icons.favorite),
                     onTap: () {
-                      bool isChecked = currentWord.isFavourite!;
+                      final isChecked = currentWord.isFavourite!;
                       currentWord.isFavourite = !isChecked;
                       currentWord.save();
                     },

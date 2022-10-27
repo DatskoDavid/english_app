@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'word_info_screen.dart';
 import 'vocabulary_screen.dart';
+import 'word_info_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);

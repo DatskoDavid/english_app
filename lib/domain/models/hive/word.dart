@@ -1,10 +1,6 @@
-import 'dart:math';
-
 import 'package:hive/hive.dart';
 
 part 'word.g.dart';
-
-var random = Random();
 
 @HiveType(typeId: 0)
 class Word extends HiveObject {
@@ -16,10 +12,8 @@ class Word extends HiveObject {
   bool? isFavourite;
 
   Word({
-    /* this.id = /* Hive.box('words_box').length.toString() */, */
     this.id = '0',
     required this.word,
     this.isFavourite = false,
   });
 }
-
