@@ -15,12 +15,7 @@ class WordInfoScreen extends StatefulWidget {
 
 class _WordInfoScreenState extends State<WordInfoScreen> {
   late final wordService = WordService(widget.word);
-  late Future<Word> wordFromNetwork = wordService.fetchWords();
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  late Future<WordApi> wordFromNetwork = wordService.fetchWords();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +23,7 @@ class _WordInfoScreenState extends State<WordInfoScreen> {
       appBar: AppBar(
         title: const Text('About word'),
       ),
-      body: FutureBuilder<Word>(
+      body: FutureBuilder<WordApi>(
         future: wordFromNetwork,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -105,19 +100,32 @@ class _WordInfoScreenState extends State<WordInfoScreen> {
                       FloatingActionButtonLocation.centerFloat,
                   floatingActionButton: SizedBox(
                     height: constraints.maxHeight * 0.07,
+                    width: constraints.maxWidth * 0.28,
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 5.0),
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          side: const BorderSide(
+                            width: 1.5,
+                            color: Colors.indigo,
+                          ),
+                        ),
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) {
-                                return const QuizScreen();
+                                return QuizScreen(word: wordFromNetwork);
                               },
                             ),
                           );
                         },
-                        child: const Text('Go study'),
+                        child: const Text(
+                          'Go study',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     ),
                   ),

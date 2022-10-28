@@ -12,9 +12,21 @@ class ResultScreen extends StatelessWidget {
         title: const Text('ResultScreen'),
       ),
       body: Center(
-        child: Text(
-          'Your result',
-          style: Theme.of(context).textTheme.headline3,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Your progress in learn of ___ word',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            CircularProgressIndicator(
+              value: 0.3,
+              backgroundColor: Colors.grey[400],
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
