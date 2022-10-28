@@ -1,13 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../data/get_word_service.dart';
 import '../../domain/models/hive/word.dart';
 
-class AddWordDialog extends StatelessWidget {
+class AddWordDialog extends StatefulWidget {
+  AddWordDialog({Key? key}) : super(key: key);
+
+  @override
+  State<AddWordDialog> createState() => _AddWordDialogState();
+}
+
+class _AddWordDialogState extends State<AddWordDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final TextEditingController _wordController = TextEditingController();
 
-  AddWordDialog({Key? key}) : super(key: key);
+  var wordIsCorrect = false;
+
+  bool isValid(String input) {
+    checkWord(input);
+    return wordIsCorrect;
+  }
+
+  Future checkWord(String word) async {
+    final wordService = WordService(word);
+    final response = await wordService.fetchWords().then(
+      (value) {
+        wordIsCorrect = true;
+        print('correct');
+      },
+    ).onError(
+      (error, stackTrace) {
+        wordIsCorrect = false;
+        print('incorrect');
+      },
+    );
+    // Future.delayed(const Duration(seconds: 5));
+    /* response.then((value) {
+      wordIsCorrect = true;
+      print('correct');
+    });
+    response. */
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +50,7 @@ class AddWordDialog extends StatelessWidget {
       title: const Text('Input word'),
       content: Form(
         autovalidateMode: AutovalidateMode.onUserInteraction,
+        // autovalidateMode: AutovalidateMode.disabled,
         key: _formKey,
         child: TextFormField(
           controller: _wordController,
@@ -27,6 +63,10 @@ class AddWordDialog extends StatelessWidget {
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter some text';
+            } else if (!value.contains(RegExp(r'^[a-z]+$'))) {
+              return 'Word must contain only letters';
+            } else if (!isValid(_wordController.text)) {
+              return 'Word is incorrect';
             } else {
               return null;
             }
