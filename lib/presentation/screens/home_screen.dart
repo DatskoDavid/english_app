@@ -10,33 +10,63 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('English'),
+        title: const Text('English App'),
+        centerTitle: true,
       ),
       body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
         children: [
-          ListTile(
-            title: const Text('Vocabulary'),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) {
-                    return const VocabularyScreen();
-                  },
+          Card(
+            clipBehavior: Clip.antiAlias,
+            child: ListTile(
+              tileColor: const Color.fromARGB(255, 15, 134, 194),
+              hoverColor: Colors.indigo,
+              dense: true,
+              title: const Center(
+                child: Text(
+                  'Vocabulary',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              );
-            },
+              ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) {
+                      return const VocabularyScreen();
+                    },
+                  ),
+                );
+              },
+            ),
           ),
-          ListTile(
-            title: const Text('Train words'),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) {
-                    return const WordInfoScreen(word: 'DEFAULT (from main)');
-                  },
+          Card(
+            clipBehavior: Clip.antiAlias,
+            child: ListTile(
+              tileColor: const Color.fromARGB(255, 15, 134, 194),
+              hoverColor: Colors.indigo,
+              dense: true,
+              title: const Center(
+                child: Text(
+                  'Train words',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              );
-            },
+              ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) {
+                      return const WordInfoScreen(word: 'DEFAULT (from main)');
+                    },
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

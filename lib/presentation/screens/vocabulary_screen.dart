@@ -37,6 +37,7 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
             );
           }
           return ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             itemBuilder: (context, index) {
               final currentWord = box.getAt(index);
               return Dismissible(
@@ -68,39 +69,52 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
                     currentWord.delete();
                   }
                 }, */
-                child: ListTile(
-                  leading: InkWell(
-                    child: (currentWord.isFavourite ?? false)
-                        ? const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                          )
-                        : const Icon(Icons.favorite),
+                child: Card(
+                  color: Color.fromARGB(255, 225, 226, 235),
+                  margin: EdgeInsets.only(bottom: 10),
+                  child: ListTile(
+                    leading: InkWell(
+                      child: (currentWord.isFavourite ?? false)
+                          ? const Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                            )
+                          : const Icon(Icons.favorite),
+                      onTap: () {
+                        final isChecked = currentWord.isFavourite!;
+                        currentWord.isFavourite = !isChecked;
+                        currentWord.save();
+                      },
+                    ),
+                    title: Text(currentWord.word ?? ''),
+                    subtitle: InkWell(
+                      onDoubleTap: () => launchUrl(
+                        Uri.parse(
+                          currentUrl(currentWord.word ?? baseUrl),
+                        ),
+                      ),
+                      child: const Text(
+                        'Search in oxford dictionary',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.chrome_reader_mode_outlined),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) {
+                              return WordInfoScreen(word: currentWord.word!);
+                            },
+                          ),
+                        );
+                      },
+                    ),
                     onTap: () {
-                      final isChecked = currentWord.isFavourite!;
-                      currentWord.isFavourite = !isChecked;
-                      currentWord.save();
-                    },
-                  ),
-                  title: Text(currentWord.word ?? ''),
-                  subtitle: InkWell(
-                    onDoubleTap: () => launchUrl(
-                      Uri.parse(
-                        currentUrl(currentWord.word ?? baseUrl),
-                      ),
-                    ),
-                    child: Text(
-                      'Search in oxford dictionary',
-                      style: TextStyle(
-                        color: Colors.blue[200],
-                        fontStyle: FontStyle.italic,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.chrome_reader_mode_outlined),
-                    onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) {
@@ -110,15 +124,6 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
                       );
                     },
                   ),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) {
-                          return WordInfoScreen(word: currentWord.word!);
-                        },
-                      ),
-                    );
-                  },
                 ),
               );
             },
