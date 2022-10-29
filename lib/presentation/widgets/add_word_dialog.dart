@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -16,32 +17,19 @@ class _AddWordDialogState extends State<AddWordDialog> {
 
   final TextEditingController _wordController = TextEditingController();
 
-  var wordIsCorrect = false;
-
-  bool isValid(String input) {
-    checkWord(input);
-    return wordIsCorrect;
-  }
+  bool wordIsCorrect = true;
 
   Future checkWord(String word) async {
     final wordService = WordService(word);
     final response = await wordService.fetchWords().then(
       (value) {
         wordIsCorrect = true;
-        print('correct');
       },
     ).onError(
       (error, stackTrace) {
         wordIsCorrect = false;
-        print('incorrect');
       },
     );
-    // Future.delayed(const Duration(seconds: 5));
-    /* response.then((value) {
-      wordIsCorrect = true;
-      print('correct');
-    });
-    response. */
   }
 
   @override
@@ -50,12 +38,40 @@ class _AddWordDialogState extends State<AddWordDialog> {
       title: const Text('Input word'),
       content: Form(
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        // autovalidateMode: AutovalidateMode.disabled,
         key: _formKey,
         child: TextFormField(
           controller: _wordController,
           decoration: InputDecoration(
+            suffixIcon: SizedBox(
+              height: 5,
+              width: 5,
+              child: FutureBuilder(
+                //future: checkWord(_wordController.text),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return const Icon(
+                      Icons.check_rounded,
+                      size: 25,
+                      color: Color.fromARGB(255, 41, 117, 43),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return const Icon(
+                      Icons.close,
+                      size: 25,
+                      color: Color.fromARGB(255, 201, 48, 37),
+                    );
+                  }
+                  return const Icon(
+                    Icons.propane_tank,
+                    size: 25,
+                    color: Colors.indigo,
+                  );
+                },
+              ),
+            ),
             hintText: 'Enter here...',
+            filled: true,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -65,7 +81,10 @@ class _AddWordDialogState extends State<AddWordDialog> {
               return 'Please enter some text';
             } else if (!value.contains(RegExp(r'^[a-z]+$'))) {
               return 'Word must contain only letters';
-            } else if (!isValid(_wordController.text)) {
+            } /* else if (!isValid(_wordController.text)) {
+                    return 'Word is incorrect';
+                  } */
+            else if (!wordIsCorrect) {
               return 'Word is incorrect';
             } else {
               return null;
@@ -88,12 +107,6 @@ class _AddWordDialogState extends State<AddWordDialog> {
               ),
             ),
             onPressed: () {
-              Future.delayed(
-                const Duration(milliseconds: 500),
-                () {
-                  _wordController.clear();
-                },
-              );
               Navigator.of(context).pop();
             },
             child: const Padding(
@@ -122,21 +135,24 @@ class _AddWordDialogState extends State<AddWordDialog> {
                 ),
               ),
             ),
-            onPressed: () {
+            onPressed: () async {
+              await checkWord(_wordController.text);
+              // wordIsCorrect = true;
               if (_formKey.currentState!.validate()) {
+                //print(wordIsCorrect);
                 final box = Hive.box<Word>('words_box');
                 box.add(
                   Word(
                       id: DateTime.now().toString(),
                       word: _wordController.text),
                 );
-                Future.delayed(
-                  const Duration(milliseconds: 50),
-                  () {
+                await Future.delayed(
+                  const Duration(milliseconds: 500),
+                  /* () {
                     _wordController.clear();
-                  },
+                  }, */
                 );
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               }
             },
             child: const Padding(

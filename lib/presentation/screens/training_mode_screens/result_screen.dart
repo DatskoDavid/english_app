@@ -32,13 +32,8 @@ class ResultScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.home),
           onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) {
-                  return const HomeScreen();
-                },
-              ),
-            );
+            final route = MaterialPageRoute(builder: (_) => const HomeScreen());
+            Navigator.of(context).push(route);
           }),
     );
   }

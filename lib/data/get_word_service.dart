@@ -37,8 +37,6 @@ class WordApi {
         'pronunciation': pronunciation,
         'results': results,
       };
-
-  then(Null Function(dynamic value) param0) {}
 }
 
 class Result {
