@@ -10,7 +10,8 @@ class WordDefinitionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 4,
+      color: const Color.fromARGB(255, 232, 233, 236),
+      elevation: 3,
       child: ListTile(
         leading: Container(
           decoration: BoxDecoration(

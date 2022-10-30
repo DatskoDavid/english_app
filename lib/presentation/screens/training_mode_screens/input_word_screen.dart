@@ -5,12 +5,12 @@ import '../../widgets/next_screen_btn.dart';
 import 'result_screen.dart';
 
 class InputWordScreen extends StatelessWidget {
-  final Future<WordApi> word;
-
-  const InputWordScreen({super.key, required this.word});
+  static const routeName = 'input_word';
 
   @override
   Widget build(BuildContext context) {
+    final word = ModalRoute.of(context)!.settings.arguments as Future<WordApi>;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Enter word screen'),
@@ -55,7 +55,10 @@ class InputWordScreen extends StatelessWidget {
                         hintStyle: TextStyle(color: Colors.grey[800])),
                   ),
                 ),
-                const NextScreenBtn(ResultScreen()),
+                NextScreenBtn(
+                  routeName: ResultScreen.routeName,
+                  arguments: word,
+                ),
               ],
             );
           },

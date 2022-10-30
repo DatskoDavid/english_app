@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 
 class NextScreenBtn extends StatelessWidget {
-  final Widget nextScreen;
+  final String routeName;
+  final Object? arguments;
 
-  const NextScreenBtn(this.nextScreen);
+  NextScreenBtn({
+    required this.routeName,
+    this.arguments,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 40,
       child: ElevatedButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) {
-                return nextScreen;
-              },
-            ),
-          );
-        },
+        onPressed: () => Navigator.pushNamed(
+          context,
+          routeName,
+          arguments: arguments,
+        ),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.green),
         ),

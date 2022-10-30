@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../data/get_word_service.dart';
+import '../../widgets/next_screen_btn.dart';
 import 'input_word_screen.dart';
 
 class QuizScreen extends StatefulWidget {
-  final Future<WordApi> word;
-
-  QuizScreen({super.key, required this.word});
+  static const routeName = 'quiz';
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -15,13 +14,15 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
+    final word = ModalRoute.of(context)!.settings.arguments as Future<WordApi>;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quiz Screen'),
       ),
       body: Center(
         child: FutureBuilder<WordApi>(
-          future: widget.word,
+          future: word,
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return const Center(child: CircularProgressIndicator());
@@ -56,30 +57,9 @@ class _QuizScreenState extends State<QuizScreen> {
                 const SizedBox(height: 10),
                 _answer('Random word'),
                 const SizedBox(height: 20),
-                SizedBox(
-                  height: 40,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) {
-                            return InputWordScreen(word: widget.word);
-                          },
-                        ),
-                      );
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.green),
-                    ),
-                    child: const Text(
-                      'Next',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
+                NextScreenBtn(
+                  routeName: InputWordScreen.routeName,
+                  arguments: word,
                 ),
               ],
             );

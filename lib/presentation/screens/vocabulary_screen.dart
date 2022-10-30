@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../client/hive_names.dart';
 import '../../domain/models/hive/word.dart';
 import '../widgets/add_word_dialog.dart';
 import 'word_info_screen.dart';
 
 class VocabularyScreen extends StatefulWidget {
   const VocabularyScreen({Key? key}) : super(key: key);
+
+  static const routeName = '/vocabulary';
 
   @override
   State<VocabularyScreen> createState() => _VocabularyScreenState();
@@ -28,7 +31,7 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
         title: const Text('Vocabulary'),
       ),
       body: ValueListenableBuilder(
-        valueListenable: Hive.box<Word>('words_box').listenable(),
+        valueListenable: Hive.box<Word>(BoxNames.words).listenable(),
         // ignore: avoid_types_on_closure_parameters
         builder: (context, Box<Word> box, _) {
           if (box.values.isEmpty) {
@@ -37,7 +40,7 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
             );
           }
           return ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             itemBuilder: (context, index) {
               final currentWord = box.getAt(index);
               return Dismissible(
@@ -52,26 +55,9 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
                   ),
                 ),
                 onDismissed: (direction) => currentWord.delete(),
-                /* background: Container(
-                  color: Colors.green,
-                  child: const Icon(Icons.favorite_outline),
-                ),
-                secondaryBackground: Container(
-                  color: Colors.red,
-                  child: const Icon(Icons.cancel_outlined),
-                ),
-                onDismissed: (direction) {
-                  if (direction == DismissDirection.startToEnd) {
-                    bool isChecked = currentWord.isFavourite!;
-                    currentWord.isFavourite = !isChecked;
-                    currentWord.save();
-                  } else {
-                    currentWord.delete();
-                  }
-                }, */
                 child: Card(
-                  color: Color.fromARGB(255, 225, 226, 235),
-                  margin: EdgeInsets.only(bottom: 10),
+                  color: const Color.fromARGB(255, 225, 226, 235),
+                  margin: const EdgeInsets.only(bottom: 10),
                   child: ListTile(
                     leading: InkWell(
                       child: (currentWord.isFavourite ?? false)
@@ -104,25 +90,13 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.chrome_reader_mode_outlined),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) {
-                              return WordInfoScreen(word: currentWord.word!);
-                            },
-                          ),
-                        );
-                      },
+                      onPressed: () => Navigator.pushNamed(
+                          context, WordInfoScreen.routeName,
+                          arguments: currentWord.word),
                     ),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) {
-                            return WordInfoScreen(word: currentWord.word!);
-                          },
-                        ),
-                      );
-                    },
+                    onTap: () => Navigator.pushNamed(
+                        context, WordInfoScreen.routeName,
+                        arguments: currentWord.word),
                   ),
                 ),
               );

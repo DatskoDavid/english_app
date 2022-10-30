@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../home_screen.dart';
 
 class ResultScreen extends StatelessWidget {
+  static const routeName = 'result';
+
   const ResultScreen({Key? key}) : super(key: key);
 
   @override
@@ -30,11 +32,9 @@ class ResultScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.home),
-          onPressed: () {
-            final route = MaterialPageRoute(builder: (_) => const HomeScreen());
-            Navigator.of(context).push(route);
-          }),
+        child: const Icon(Icons.home),
+        onPressed: () => Navigator.pushNamed(context, HomeScreen.routeName),
+      ),
     );
   }
 }

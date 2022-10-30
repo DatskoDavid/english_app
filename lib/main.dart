@@ -3,6 +3,11 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'domain/models/hive/word.dart';
 import 'presentation/screens/home_screen.dart';
+import 'presentation/screens/training_mode_screens/input_word_screen.dart';
+import 'presentation/screens/training_mode_screens/quiz_screen.dart';
+import 'presentation/screens/training_mode_screens/result_screen.dart';
+import 'presentation/screens/vocabulary_screen.dart';
+import 'presentation/screens/word_info_screen.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -36,7 +41,15 @@ class _MyAppState extends State<MyApp> {
         ),
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      initialRoute: HomeScreen.routeName,
+      routes: {
+        HomeScreen.routeName: (context) => const HomeScreen(),
+        VocabularyScreen.routeName: (context) => const VocabularyScreen(),
+        WordInfoScreen.routeName: (context) => WordInfoScreen(),
+        QuizScreen.routeName: (context) => QuizScreen(),
+        InputWordScreen.routeName: (context) => InputWordScreen(),
+        ResultScreen.routeName: (context) => const ResultScreen(),
+      },
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -21,6 +20,7 @@ class _AddWordDialogState extends State<AddWordDialog> {
 
   Future checkWord(String word) async {
     final wordService = WordService(word);
+    // ignore: unused_local_variable
     final response = await wordService.fetchWords().then(
       (value) {
         wordIsCorrect = true;
@@ -147,7 +147,7 @@ class _AddWordDialogState extends State<AddWordDialog> {
                       word: _wordController.text),
                 );
                 await Future.delayed(
-                  const Duration(milliseconds: 500),
+                  const Duration(milliseconds: 250),
                   /* () {
                     _wordController.clear();
                   }, */

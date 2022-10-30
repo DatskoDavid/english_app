@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../client/hive_names.dart';
 import '../../data/get_word_service.dart';
+import '../../domain/models/hive/word.dart';
 import '../widgets/word_definition_card.dart';
 import 'training_mode_screens/quiz_screen.dart';
 
 class WordInfoScreen extends StatefulWidget {
-  final String word;
-
-  const WordInfoScreen({super.key, required this.word});
+  static const routeName = '/word_info';
 
   @override
   State<WordInfoScreen> createState() => _WordInfoScreenState();
 }
 
 class _WordInfoScreenState extends State<WordInfoScreen> {
-  late final wordService = WordService(widget.word);
-  late Future<WordApi> wordFromNetwork = wordService.fetchWords();
-
   @override
   Widget build(BuildContext context) {
+    final word = (ModalRoute.of(context)!.settings.arguments ??
+        Hive.box<Word>(BoxNames.words).getAt(0)!.word) as String;
+    final wordFromNetwork = WordService(word).fetchWords();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('About word'),
@@ -110,15 +112,11 @@ class _WordInfoScreenState extends State<WordInfoScreen> {
                             color: Colors.indigo,
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) {
-                                return QuizScreen(word: wordFromNetwork);
-                              },
-                            ),
-                          );
-                        },
+                        onPressed: () => Navigator.pushNamed(
+                          context,
+                          QuizScreen.routeName,
+                          arguments: wordFromNetwork,
+                        ),
                         child: const Text(
                           'Go study',
                           style: TextStyle(
