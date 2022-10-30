@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nice_buttons/nice_buttons.dart';
 
 import 'vocabulary_screen.dart';
 import 'word_info_screen.dart';
@@ -20,6 +21,10 @@ class HomeScreen extends StatelessWidget {
         children: [
           _getButton('Vocabulary', context, VocabularyScreen.routeName),
           _getButton('Training words', context, WordInfoScreen.routeName),
+          const SizedBox(height: 10),
+          _getNiceBtn(),
+          const SizedBox(height: 10),
+          _getNiceBtn(),
         ],
       ),
     );
@@ -42,6 +47,24 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         onTap: () => Navigator.pushNamed(context, routeName),
+      ),
+    );
+  }
+
+  Widget _getNiceBtn() {
+    return NiceButtons(
+      startColor: const Color.fromARGB(255, 124, 192, 226),
+      stretch: false,
+      gradientOrientation: GradientOrientation.Horizontal,
+      onTap: (finish) {
+        print('On tap called');
+      },
+      child: const Text(
+        'Nice Buttons',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }

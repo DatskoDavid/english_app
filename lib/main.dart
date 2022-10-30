@@ -45,10 +45,21 @@ class _MyAppState extends State<MyApp> {
       routes: {
         HomeScreen.routeName: (context) => const HomeScreen(),
         VocabularyScreen.routeName: (context) => const VocabularyScreen(),
-        WordInfoScreen.routeName: (context) => WordInfoScreen(),
+        //WordInfoScreen.routeName: (context) => WordInfoScreen(),
         QuizScreen.routeName: (context) => QuizScreen(),
         InputWordScreen.routeName: (context) => InputWordScreen(),
         ResultScreen.routeName: (context) => const ResultScreen(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == WordInfoScreen.routeName) {
+          final word = ModalRoute.of(context)!.settings.arguments as String;
+          return MaterialPageRoute(
+            builder: (context) => WordInfoScreen(word: word),
+          );
+        }
+
+        assert(false, 'Need to implement: ${settings.name}');
+        return null;
       },
     );
   }

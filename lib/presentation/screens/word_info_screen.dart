@@ -10,11 +10,20 @@ import 'training_mode_screens/quiz_screen.dart';
 class WordInfoScreen extends StatefulWidget {
   static const routeName = '/word_info';
 
+  final String word;
+
+  const WordInfoScreen({super.key, required this.word});
+
   @override
   State<WordInfoScreen> createState() => _WordInfoScreenState();
 }
 
 class _WordInfoScreenState extends State<WordInfoScreen> {
+  /* final word = (ModalRoute.of(context)!.settings.arguments ??
+      Hive.box<Word>(BoxNames.words).getAt(0)!.word) as String; */
+  /* final wordService = WordService(getWord());
+  final wordFromNetwork = WordService(widget.word).fetchWords(); */
+
   @override
   Widget build(BuildContext context) {
     final word = (ModalRoute.of(context)!.settings.arguments ??
