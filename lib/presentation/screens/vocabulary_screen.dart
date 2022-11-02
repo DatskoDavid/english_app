@@ -95,8 +95,10 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
                           arguments: currentWord.word),
                     ),
                     onTap: () => Navigator.pushNamed(
-                        context, WordInfoScreen.routeName,
-                        arguments: currentWord.word),
+                      context,
+                      WordInfoScreen.routeName,
+                      arguments: currentWord.word,
+                    ),
                   ),
                 ),
               );

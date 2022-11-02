@@ -7,6 +7,10 @@ import 'input_word_screen.dart';
 class QuizScreen extends StatefulWidget {
   static const routeName = 'quiz';
 
+  final WordApi word;
+
+  QuizScreen({super.key, required this.word});
+
   @override
   State<QuizScreen> createState() => _QuizScreenState();
 }
@@ -14,62 +18,52 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
-    final word = ModalRoute.of(context)!.settings.arguments as Future<WordApi>;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quiz Screen'),
       ),
       body: Center(
-        child: FutureBuilder<WordApi>(
-          future: word,
-          builder: (context, snapshot) {
-            if (snapshot.data == null) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            return ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: const Color.fromARGB(255, 100, 190, 103),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      snapshot.data!.results[0].definition,
-                      style: Theme.of(context).textTheme.headline6,
-                      textAlign: TextAlign.center,
-                    ),
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color.fromARGB(255, 100, 190, 103),
+                    width: 2,
                   ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                const SizedBox(height: 20),
-                _answer(snapshot.data!.word),
-                const SizedBox(height: 10),
-                _answer('Random word from vocabulary (use Hive)'),
-                const SizedBox(height: 10),
-                _answer(
-                    'If not enough words in vocabulary use prerecorded list'),
-                const SizedBox(height: 10),
-                _answer('Random word'),
-                const SizedBox(height: 20),
-                NextScreenBtn(
-                  routeName: InputWordScreen.routeName,
-                  arguments: word,
+                child: Text(
+                  widget.word.results[0].definition,
+                  style: Theme.of(context).textTheme.headline6,
+                  textAlign: TextAlign.center,
                 ),
-              ],
-            );
-          },
+              ),
+            ),
+            const SizedBox(height: 20),
+            _answer(widget.word.word, true),
+            const SizedBox(height: 10),
+            _answer('Random word from vocabulary (use Hive)', false),
+            const SizedBox(height: 10),
+            _answer('If not enough words in vocabulary use prerecorded list',
+                false),
+            const SizedBox(height: 10),
+            _answer('Random word', false),
+            const SizedBox(height: 20),
+            NextScreenBtn(
+              routeName: InputWordScreen.routeName,
+              arguments: widget.word,
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _answer(String answer) {
+  Widget _answer(String answer, bool isCorrect) {
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all<Color>(

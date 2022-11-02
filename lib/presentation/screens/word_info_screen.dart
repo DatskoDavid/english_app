@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../client/hive_names.dart';
 import '../../data/get_word_service.dart';
-import '../../domain/models/hive/word.dart';
 import '../widgets/word_definition_card.dart';
 import 'training_mode_screens/quiz_screen.dart';
 
@@ -19,17 +16,11 @@ class WordInfoScreen extends StatefulWidget {
 }
 
 class _WordInfoScreenState extends State<WordInfoScreen> {
-  /* final word = (ModalRoute.of(context)!.settings.arguments ??
-      Hive.box<Word>(BoxNames.words).getAt(0)!.word) as String; */
-  /* final wordService = WordService(getWord());
-  final wordFromNetwork = WordService(widget.word).fetchWords(); */
+  late final wordFromNetwork = WordService(widget.word).fetchWords();
+  bool lastItem = true;
 
   @override
   Widget build(BuildContext context) {
-    final word = (ModalRoute.of(context)!.settings.arguments ??
-        Hive.box<Word>(BoxNames.words).getAt(0)!.word) as String;
-    final wordFromNetwork = WordService(word).fetchWords();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('About word'),
@@ -38,6 +29,7 @@ class _WordInfoScreenState extends State<WordInfoScreen> {
         future: wordFromNetwork,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            final simpleWord = snapshot.data;
             return LayoutBuilder(
               builder: (context, constraints) {
                 return Scaffold(
@@ -97,11 +89,17 @@ class _WordInfoScreenState extends State<WordInfoScreen> {
                           child: ListView.builder(
                             // physics: const NeverScrollableScrollPhysics(),
                             itemCount: snapshot.data!.results.length,
-                            itemBuilder: (_, index) => WordDefinitionCard(
-                              result: snapshot.data!.results[index],
-                            ),
+                            itemBuilder: (_, index) {
+                              if (index == snapshot.data!.results.length - 1) {
+                                lastItem = true;
+                              }
+                              return WordDefinitionCard(
+                                result: snapshot.data!.results[index],
+                              );
+                            },
                             padding: EdgeInsets.only(
-                                bottom: constraints.maxHeight * 0.05),
+                              bottom: constraints.maxHeight * 0.1,
+                            ),
                           ),
                         ),
                       ],
@@ -124,13 +122,15 @@ class _WordInfoScreenState extends State<WordInfoScreen> {
                         onPressed: () => Navigator.pushNamed(
                           context,
                           QuizScreen.routeName,
-                          arguments: wordFromNetwork,
+                          arguments: simpleWord,
                         ),
-                        child: const Text(
-                          'Go study',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
+                        child: const FittedBox(
+                          child: Text(
+                            'Go study',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ),

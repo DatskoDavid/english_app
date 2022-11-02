@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'client/hive_names.dart';
+import 'data/get_word_service.dart';
 import 'domain/models/hive/word.dart';
 import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/training_mode_screens/input_word_screen.dart';
@@ -45,16 +47,32 @@ class _MyAppState extends State<MyApp> {
       routes: {
         HomeScreen.routeName: (context) => const HomeScreen(),
         VocabularyScreen.routeName: (context) => const VocabularyScreen(),
-        //WordInfoScreen.routeName: (context) => WordInfoScreen(),
-        QuizScreen.routeName: (context) => QuizScreen(),
-        InputWordScreen.routeName: (context) => InputWordScreen(),
-        ResultScreen.routeName: (context) => const ResultScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == WordInfoScreen.routeName) {
-          final word = ModalRoute.of(context)!.settings.arguments as String;
+          final word = (settings.arguments ??
+              Hive.box<Word>(BoxNames.words).getAt(0)?.word) as String;
+
           return MaterialPageRoute(
             builder: (context) => WordInfoScreen(word: word),
+          );
+        } else if (settings.name == QuizScreen.routeName) {
+          final word = settings.arguments as WordApi;
+
+          return MaterialPageRoute(
+            builder: (context) => QuizScreen(word: word),
+          );
+        } else if (settings.name == InputWordScreen.routeName) {
+          final word = settings.arguments as WordApi;
+
+          return MaterialPageRoute(
+            builder: (context) => InputWordScreen(word: word),
+          );
+        } else if (settings.name == ResultScreen.routeName) {
+          final word = settings.arguments as WordApi;
+
+          return MaterialPageRoute(
+            builder: (context) => ResultScreen(word: word),
           );
         }
 

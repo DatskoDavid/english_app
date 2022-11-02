@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/get_word_service.dart';
 import '../home_screen.dart';
 
 class ResultScreen extends StatelessWidget {
   static const routeName = 'result';
 
-  const ResultScreen({Key? key}) : super(key: key);
+  final WordApi word;
+
+  const ResultScreen({super.key, required this.word});
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +21,48 @@ class ResultScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Your progress in learn of ___ word',
+              'Your progress in learn of word',
               style: Theme.of(context).textTheme.headline6,
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              word.word,
+              style: const TextStyle(
+                  // color: Colors.indigo,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(
               height: 30,
             ),
-            CircularProgressIndicator(
-              value: 0.3,
-              backgroundColor: Colors.grey[400],
-            ),
+            SizedBox(
+              height: 80,
+              width: 80,
+              child: Stack(
+                children: [
+                  SizedBox(
+                    height: 80,
+                    width: 80,
+                    child: CircularProgressIndicator(
+                      value: 0.5,
+                      backgroundColor: Colors.grey[400],
+                      strokeWidth: 8,
+                    ),
+                  ),
+                  const Center(
+                    child: Text(
+                      '50%',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),
