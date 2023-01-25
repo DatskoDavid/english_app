@@ -34,11 +34,20 @@ class _WordInfoScreenState extends State<WordInfoScreen> {
               builder: (context, constraints) {
                 return Scaffold(
                   body: Padding(
-                    padding: EdgeInsets.all(constraints.maxHeight * 0.02),
-                    child: Column(
+                    //TODO
+                    // padding: EdgeInsets.all(constraints.maxHeight * 0.02),
+                    padding: EdgeInsets.only(
+                      top: constraints.maxHeight * 0.02,
+                      right: constraints.maxHeight * 0.02,
+                      bottom: 0,
+                      left: constraints.maxHeight * 0.02,
+                    ),
+
+
+                    child: ListView(
                       children: [
                         Container(
-                          height: constraints.maxHeight * 0.5,
+                          height: constraints.maxHeight * 0.45,
                           padding: EdgeInsets.all(constraints.maxHeight * 0.02),
                           decoration: BoxDecoration(
                             color: Colors.blue,
@@ -85,7 +94,7 @@ class _WordInfoScreenState extends State<WordInfoScreen> {
                           ),
                         ),
                         SizedBox(
-                          height: constraints.maxHeight * 0.46,
+                          height: constraints.maxHeight * 0.53,
                           child: ListView.builder(
                             // physics: const NeverScrollableScrollPhysics(),
                             itemCount: snapshot.data!.results.length,

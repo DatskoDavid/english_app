@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class NextScreenBtn extends StatelessWidget {
   final String routeName;
   final Object? arguments;
+  final Function? handler;
 
   NextScreenBtn({
     required this.routeName,
     this.arguments,
+    this.handler,
   });
 
   @override

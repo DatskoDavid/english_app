@@ -40,7 +40,7 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
             );
           }
           return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             itemBuilder: (context, index) {
               final currentWord = box.getAt(index);
               return Dismissible(
@@ -59,6 +59,10 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
                   color: const Color.fromARGB(255, 225, 226, 235),
                   margin: const EdgeInsets.only(bottom: 10),
                   child: ListTile(
+                    /* leading: const SizedBox(
+                      height: 20,
+                      child: LikeButton(),
+                    ), */
                     leading: InkWell(
                       child: (currentWord.isFavourite ?? false)
                           ? const Icon(
