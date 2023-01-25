@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'client/hive_names.dart';
 import 'data/get_word_service.dart';
 import 'domain/models/hive/word.dart';
+import 'domain/models/training_info.dart';
 import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/training_mode_screens/input_word_screen.dart';
 import 'presentation/screens/training_mode_screens/quiz_screen.dart';
@@ -14,7 +15,7 @@ import 'presentation/screens/word_info_screen.dart';
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(WordAdapter());
-  await Hive.openBox<Word>('words_box');
+  await Hive.openBox<Word>(BoxNames.words);
   runApp(const MyApp());
 }
 
@@ -63,16 +64,18 @@ class _MyAppState extends State<MyApp> {
             builder: (context) => QuizScreen(word: word),
           );
         } else if (settings.name == InputWordScreen.routeName) {
-          final word = settings.arguments as WordApi;
+          final trainingInformation = settings.arguments as TrainingInfo;
 
           return MaterialPageRoute(
-            builder: (context) => InputWordScreen(word: word),
+            builder: (context) =>
+                InputWordScreen(trainingInfo: trainingInformation),
           );
         } else if (settings.name == ResultScreen.routeName) {
-          final word = settings.arguments as WordApi;
+          final trainingInformation = settings.arguments as TrainingInfo;
 
           return MaterialPageRoute(
-            builder: (context) => ResultScreen(word: word),
+            builder: (context) =>
+                ResultScreen(trainingInfo: trainingInformation),
           );
         }
 

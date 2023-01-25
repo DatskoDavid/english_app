@@ -39,6 +39,9 @@ dependencies:
   http: ^0.13.5
   hive_flutter: ^1.1.0
   nice_buttons: ^0.0.2
+  percent_indicator: ^4.2.2
+  like_button: ^2.0.5
+  responsive_sizer: ^3.1.1
   
   
 
