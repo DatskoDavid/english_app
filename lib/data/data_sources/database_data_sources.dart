@@ -1,52 +1,51 @@
-/* import 'dart:io';
+import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter_state_samples/data/mappers/task_mapper.dart';
-import 'package:flutter_state_samples/domain/entities/task.dart';
-import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
-
-import '../entities/task_db.dart';
+import '../../client/box_names.dart';
+import '../../domain/models/word.dart';
+import '../hive_models/word_db.dart';
+import '../mappers/word_mapper.dart';
 
 class DatabaseDataSource {
-  static const _tasksTag = 'tasks';
-  static const _testTag = 'test';
-  static late final Box<TaskDB> _tasksBox;
+  static late final Box<WordDB> _wordsBox;
 
-  static Future<void> initializeHive({isTesting = false}) async {
-    if (!kIsWeb) {
-      Directory document = await getApplicationDocumentsDirectory();
-      Hive.init(document.path);
-    }
-    Hive.registerAdapter(TaskDBAdapter());
-    _tasksBox = await Hive.openBox<TaskDB>(isTesting ? _testTag : _tasksTag);
-    if (isTesting) await _tasksBox.clear();
+  static Future<void> initializeHive() async {
+    await Hive.initFlutter();
+
+    Hive.registerAdapter(WordDBAdapter());
+    _wordsBox = await Hive.openBox<WordDB>(BoxNames.words);
   }
 
   DatabaseDataSource();
 
   Future<void> dispose() async {
-    await _tasksBox.close();
+    await _wordsBox.close();
   }
 
-  Future<Task> createTask(Task task) async {
-    final toCreate = TaskDB(title: task.title, isDone: task.isDone);
-    final id = await _tasksBox.add(toCreate);
+  Future<Word> addWord(Word word) async {
+    final toCreate = WordDB(word: word.word, isFavourite: false);
+    final id = await _wordsBox.add(toCreate).toString();
     final created = toCreate.copyWith(id: id);
-    await _tasksBox.put(id, created);
+
+    await _wordsBox.put(id, created);
     return created.fromHive();
   }
 
-  Future<List<Task>> getTasks() async {
-    Iterable<TaskDB> result;
-    result = _tasksBox.values;
-    return List<Task>.generate(result.length, (index) => result.elementAt(index).fromHive());
+  Future<List<Word>> getWords() async {
+    final result = _wordsBox.values;
+    return List.generate(
+        result.length, (index) => result.elementAt(index).fromHive());
   }
 
-  Future<void> deleteTask(int taskId) async {
-    return _tasksBox.delete(taskId);
+  Future<Word> getConcreteWord(int index) async {
+    return _wordsBox.getAt(index)!.fromHive();
   }
 
-  Future<void> updateTask(Task task) async => _tasksBox.put(task.id!, task.toHive());
+  Future<void> deleteWord(String wordId) async {
+    final id = int.tryParse(wordId);
+    return _wordsBox.delete(id);
+  }
+
+  Future<void> updateWord(Word word) async {
+    return _wordsBox.put(word.id, word.toHive());
+  }
 }
- */
