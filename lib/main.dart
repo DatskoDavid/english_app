@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'client/hive_names.dart';
+import 'data/data_sources/database_data_sources.dart';
 import 'data/get_word_service.dart';
-import 'domain/models/hive/word.dart';
 import 'domain/models/training_info.dart';
+import 'presentation/di/injector.dart';
 import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/training_mode_screens/input_word_screen.dart';
 import 'presentation/screens/training_mode_screens/quiz_screen.dart';
 import 'presentation/screens/training_mode_screens/result_screen.dart';
+import 'presentation/screens/true_training_mode/training_controller.dart';
 import 'presentation/screens/vocabulary_screen.dart';
 import 'presentation/screens/word_info_screen.dart';
 
 void main() async {
-  await Hive.initFlutter();
-  Hive.registerAdapter(WordAdapter());
-  await Hive.openBox<Word>(BoxNames.words);
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseDataSource.initializeHive();
+  initInjector();
   runApp(const MyApp());
 }
+
+//TODO: Make dependency injection
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -45,14 +48,20 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       initialRoute: HomeScreen.routeName,
+      // initialRoute: TrainingController.routeName,
       routes: {
         HomeScreen.routeName: (context) => const HomeScreen(),
         VocabularyScreen.routeName: (context) => const VocabularyScreen(),
       },
       onGenerateRoute: (settings) {
+        //ToDo: refactor it to switch/case
+
         if (settings.name == WordInfoScreen.routeName) {
-          final word = (settings.arguments ??
-              Hive.box<Word>(BoxNames.words).getAt(0)?.word) as String;
+          //TODO: remake to get word via use case
+          /*  final word = (settings.arguments ??
+              Hive.box<Word>(BoxNames.words).getAt(0)?.word) as String; */
+
+          final word = (settings.arguments ?? 'null') as String;
 
           return MaterialPageRoute(
             builder: (context) => WordInfoScreen(word: word),
@@ -76,6 +85,10 @@ class _MyAppState extends State<MyApp> {
           return MaterialPageRoute(
             builder: (context) =>
                 ResultScreen(trainingInfo: trainingInformation),
+          );
+        } else if (settings.name == TrainingController.routeName) {
+          return MaterialPageRoute(
+            builder: (context) => TrainingController(),
           );
         }
 

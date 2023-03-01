@@ -1,12 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../client/hive_names.dart';
-import '../../domain/models/hive/word.dart';
+import '../../data/data_sources/database_data_sources.dart';
+import '../../domain/models/word.dart';
+import '../../domain/use_case/get_list_of_words.dart';
+import '../di/injector.dart';
 import '../widgets/add_word_dialog.dart';
+import '../blocs/vocabulary_bloc/vocabulary_bloc.dart';
+import '../blocs/vocabulary_bloc/vocabulary_event.dart';
+import '../blocs/vocabulary_bloc/vocabulary_state.dart';
 import 'word_info_screen.dart';
 
 class VocabularyScreen extends StatefulWidget {
@@ -19,32 +24,50 @@ class VocabularyScreen extends StatefulWidget {
 }
 
 class _VocabularyScreenState extends State<VocabularyScreen> {
+  late final VocabularyBloc _bloc;
+
   static const baseUrl =
       'https://www.oxfordlearnersdictionaries.com/definition/english/';
 
   String currentUrl(String word) => baseUrl + word;
 
   @override
+  void initState() {
+    _bloc = i.get<VocabularyBloc>()..add(InitWords());
+    super.initState();
+  }
+
+  List<Word> justForTest = [
+    Word(id: 'dcvdfv', word: 'any word', isFavourite: true),
+  ];
+
+  final getListOfWords = i.get<GetListOfWords>();
+
+  void convertList() async {
+    final words = await getListOfWords.execute();
+    justForTest = await words;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    DatabaseDataSource.initializeHive();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vocabulary'),
       ),
-      body: ValueListenableBuilder(
-        valueListenable: Hive.box<Word>(BoxNames.words).listenable(),
-        // ignore: avoid_types_on_closure_parameters
-        builder: (context, Box<Word> box, _) {
-          if (box.values.isEmpty) {
-            return const Center(
-              child: Text('Box is empty'),
-            );
-          }
+      body: BlocBuilder<VocabularyBloc, VocabularyState>(
+        bloc: _bloc,
+        builder: (context, state) {
+          final words = state.words;
           return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            itemCount: words.length,
             itemBuilder: (context, index) {
-              final currentWord = box.getAt(index);
+              var currentWord = words[index];
+
               return Dismissible(
-                key: Key(currentWord!.id!),
+                key: UniqueKey(),
+                // key: Key(currentWord!.id!),
                 background: Container(
                   color: Colors.red,
                   child: Row(
@@ -54,33 +77,36 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
                     ],
                   ),
                 ),
-                onDismissed: (direction) => currentWord.delete(),
+                // onDismissed: (direction) => currentWord.delete(),
                 child: Card(
                   color: const Color.fromARGB(255, 225, 226, 235),
                   margin: const EdgeInsets.only(bottom: 10),
                   child: ListTile(
                     /* leading: const SizedBox(
-                      height: 20,
-                      child: LikeButton(),
-                    ), */
+                                height: 20,
+                                child: LikeButton(),
+                              ), */
                     leading: InkWell(
-                      child: (currentWord.isFavourite ?? false)
+                      child: (currentWord.isFavourite)
                           ? const Icon(
                               Icons.favorite,
                               color: Colors.red,
                             )
                           : const Icon(Icons.favorite),
                       onTap: () {
-                        final isChecked = currentWord.isFavourite!;
-                        currentWord.isFavourite = !isChecked;
-                        currentWord.save();
+                        final isChecked = currentWord.isFavourite;
+                        // currentWord.isFavourite = !isChecked;
+                        currentWord =
+                            currentWord.copyWith(isFavourite: !isChecked);
+                        //TODO: make update word in database via update usecase
+                        // currentWord.save();
                       },
                     ),
-                    title: Text(currentWord.word ?? ''),
+                    title: Text(currentWord.word),
                     subtitle: InkWell(
                       onDoubleTap: () => launchUrl(
                         Uri.parse(
-                          currentUrl(currentWord.word ?? baseUrl),
+                          currentUrl(currentWord.word),
                         ),
                       ),
                       child: const Text(
@@ -107,7 +133,12 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
                 ),
               );
             },
-            itemCount: box.values.length,
+            /*  itemCount: box.values.length,
+                    );
+            },
+          );
+        },
+      ), */
           );
         },
       ),

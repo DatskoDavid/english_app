@@ -25,30 +25,34 @@ class _WordInfoScreenState extends State<WordInfoScreen> {
       appBar: AppBar(
         title: const Text('About word'),
       ),
-      body: FutureBuilder<WordApi>(
-        future: wordFromNetwork,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final simpleWord = snapshot.data;
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                return Scaffold(
-                  body: Padding(
-                    //TODO
-                    // padding: EdgeInsets.all(constraints.maxHeight * 0.02),
-                    padding: EdgeInsets.only(
-                      top: constraints.maxHeight * 0.02,
-                      right: constraints.maxHeight * 0.02,
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: FutureBuilder<WordApi>(
+          future: wordFromNetwork,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final simpleWord = snapshot.data;
+              return Scaffold(
+                body: SingleChildScrollView(
+                  child: Padding(
+                    /* padding: EdgeInsets.only(
+                      top: 1.h,
+                      right: 3.w,
                       bottom: 0,
-                      left: constraints.maxHeight * 0.02,
+                      left: 3.w,
+                    ), */
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                      right: 10,
+                      bottom: 0,
+                      left: 10,
                     ),
-
-
-                    child: ListView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          height: constraints.maxHeight * 0.45,
-                          padding: EdgeInsets.all(constraints.maxHeight * 0.02),
+                          height: MediaQuery.of(context).size.height * 0.45,
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Colors.blue,
                             borderRadius: BorderRadius.circular(10),
@@ -94,72 +98,78 @@ class _WordInfoScreenState extends State<WordInfoScreen> {
                           ),
                         ),
                         SizedBox(
-                          height: constraints.maxHeight * 0.53,
+                          height: MediaQuery.of(context).size.height * 0.47,
                           child: ListView.builder(
-                            // physics: const NeverScrollableScrollPhysics(),
+                            // shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: snapshot.data!.results.length,
                             itemBuilder: (_, index) {
                               if (index == snapshot.data!.results.length - 1) {
                                 lastItem = true;
+                              } else {
+                                lastItem = false;
                               }
-                              return WordDefinitionCard(
-                                result: snapshot.data!.results[index],
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: /* lastItem ? 100 : */ 0),
+                                child: WordDefinitionCard(
+                                  result: snapshot.data!.results[index],
+                                ),
                               );
                             },
-                            padding: EdgeInsets.only(
-                              bottom: constraints.maxHeight * 0.1,
-                            ),
+                            padding:
+                                EdgeInsets.only(bottom: lastItem ? 100 : 0),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.centerFloat,
-                  floatingActionButton: SizedBox(
-                    height: constraints.maxHeight * 0.07,
-                    width: constraints.maxWidth * 0.28,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          side: const BorderSide(
-                            width: 1.5,
-                            color: Colors.indigo,
-                          ),
+                ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
+                floatingActionButton: SizedBox(
+                  height: 50,
+                  width: 150,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        side: const BorderSide(
+                          width: 1.5,
+                          color: Colors.indigo,
                         ),
-                        onPressed: () => Navigator.pushNamed(
-                          context,
-                          QuizScreen.routeName,
-                          arguments: simpleWord,
-                        ),
-                        child: const FittedBox(
-                          child: Text(
-                            'Go study',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
+                      ),
+                      onPressed: () => Navigator.pushNamed(
+                        context,
+                        QuizScreen.routeName,
+                        arguments: simpleWord,
+                      ),
+                      child: const FittedBox(
+                        child: Text(
+                          'Go study',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
                     ),
                   ),
-                );
-              },
-            );
-          } else if (snapshot.hasError) {
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return const Center(
+                child: Text('Sorry, didn\'t find such word'),
+              );
+            }
             return const Center(
-              child: Text('Sorry, didn\'t find such word'),
+              child: CircularProgressIndicator(
+                color: Colors.indigo,
+                backgroundColor: Colors.amber,
+              ),
             );
-          }
-          return const Center(
-            child: CircularProgressIndicator(
-              color: Colors.indigo,
-              backgroundColor: Colors.amber,
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }

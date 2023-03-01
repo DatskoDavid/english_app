@@ -4,7 +4,7 @@ import '../../../domain/models/training_info.dart';
 import 'result_screen.dart';
 
 class InputWordScreen extends StatefulWidget {
-  static const routeName = 'input_word';
+  static const routeName = '/input_word';
 
   final TrainingInfo trainingInfo;
 
@@ -52,7 +52,7 @@ class _InputWordScreenState extends State<InputWordScreen> {
                 ),
                 child: Text(
                   widget.trainingInfo.word.results[0].definition,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.center,
                 ),
               ),

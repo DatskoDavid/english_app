@@ -1,18 +1,18 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../client/hive_names.dart';
 import '../../../data/get_word_service.dart';
-import '../../../domain/models/hive/word.dart';
 import '../../../domain/models/training_info.dart';
-import '../../widgets/next_screen_btn.dart';
+import '../../blocs/quiz_bloc/quiz_bloc.dart';
+import '../../blocs/quiz_bloc/quiz_event.dart';
+import '../../blocs/quiz_bloc/quiz_state.dart';
+import '../../di/injector.dart';
 import '../../widgets/quiz_variant.dart';
+import '../../widgets/next_screen_btn.dart';
 import 'input_word_screen.dart';
 
 class QuizScreen extends StatefulWidget {
-  static const routeName = 'quiz';
+  static const routeName = '/quiz';
 
   final WordApi word;
 
@@ -24,62 +24,24 @@ class QuizScreen extends StatefulWidget {
 
 class _QuizScreenState extends State<QuizScreen> {
   late TrainingInfo trainingInfo = TrainingInfo(word: widget.word);
+  late final QuizBloc _bloc;
+
+  @override
+  void initState() {
+    // generateRandomVariants();
+    _bloc = i.get<QuizBloc>()..add(InitWords(widget.word.word));
+    super.initState();
+  }
 
   bool isChoosedAnswer = false;
-  // List<String> variants = <String>[];
+
   //TODO: return to generation
-  List<String> variants = <String>[
+  /* List<String> variants = <String>[
     /* 'assume',
     'permit',
     'admit',
     'persuade', */
-  ];
-
-// TODO : If not enough words in vocabulary use prerecorded list
-  void generateRandomVariants() {
-    final random = Random();
-    final words = Hive.box<Word>(BoxNames.words);
-    final currentWord = widget.word.word;
-
-    final isEnoughWords = words.length >= 4;
-
-    //if dont enough words in vocabulary in order to generate random variants
-    if (!isEnoughWords) {
-      final prerecordedVariantsList = [
-        'assume',
-        'permit',
-        'admit',
-        'persuade',
-        'leader'
-      ];
-
-      //in case if not enough words in vocabulary in order to generate answers
-      while (variants.length < 3 && !isEnoughWords) {
-        var randomIndex = random.nextInt(prerecordedVariantsList.length);
-
-        if (!(variants.contains(prerecordedVariantsList[randomIndex])) &&
-            prerecordedVariantsList[randomIndex] != currentWord) {
-          variants.add(prerecordedVariantsList[randomIndex]);
-        }
-      }
-    }
-
-    while (variants.length < 3 && isEnoughWords) {
-      var randomIndex = random.nextInt(words.length);
-
-      if (!(variants.contains(words.getAt(randomIndex)!.word)) &&
-          words.getAt(randomIndex)!.word != currentWord) {
-        variants.add(words.getAt(randomIndex)!.word as String);
-      }
-    }
-
-    if (!variants.contains(currentWord)) {
-      variants.add(currentWord);
-    }
-
-    variants.shuffle();
-    print('final result: $variants');
-  }
+  ]; */
 
   bool isCorrect(String variant) => variant == widget.word.word;
 
@@ -89,12 +51,6 @@ class _QuizScreenState extends State<QuizScreen> {
     setState(() {
       isChoosedAnswer = true;
     });
-  }
-
-  @override
-  void initState() {
-    generateRandomVariants();
-    super.initState();
   }
 
   @override
@@ -111,32 +67,45 @@ class _QuizScreenState extends State<QuizScreen> {
               child: Container(
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
+                  color: Colors.lightBlue[100],
                   border: Border.all(
                     color: const Color.fromARGB(255, 100, 190, 103),
-                    width: 2,
+                    width: 3,
                   ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   widget.word.results[0].definition,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
             const SizedBox(height: 20),
-            ListView.separated(
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return QuizVariant(
-                  variant: variants[index],
-                  isCorrect: isCorrect(variants[index]),
-                  onTapHandler: isChoosedAnswer ? () {} : showRightAnswer,
-                  showCorrectAnswer: isChoosedAnswer,
+            BlocBuilder<QuizBloc, QuizState>(
+              bloc: _bloc,
+              builder: (context, state) {
+                return ListView.separated(
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return QuizVariant(
+                      variant: state.variants[index],
+                      isCorrect: isCorrect(state.variants[index]),
+                      onTapHandler: isChoosedAnswer ? () {} : showRightAnswer,
+                      showCorrectAnswer: isChoosedAnswer,
+                    );
+                    /* return QuizVariant(
+                      variant: variants[index],
+                      isCorrect: isCorrect(variants[index]),
+                      onTapHandler: isChoosedAnswer ? () {} : showRightAnswer,
+                      showCorrectAnswer: isChoosedAnswer,
+                    ); */
+                  },
+                  itemCount: state.variants.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 10),
                 );
               },
-              itemCount: variants.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 10),
             ),
             const SizedBox(height: 20),
             NextScreenBtn(

@@ -5,7 +5,7 @@ import '../../../domain/models/training_info.dart';
 import '../home_screen.dart';
 
 class ResultScreen extends StatelessWidget {
-  static const routeName = 'result';
+  static const routeName = '/result';
 
   final TrainingInfo trainingInfo;
 
@@ -23,7 +23,7 @@ class ResultScreen extends StatelessWidget {
           children: [
             Text(
               'Your progress in learn of word',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
             const SizedBox(
@@ -58,7 +58,7 @@ class ResultScreen extends StatelessWidget {
             Center(
               child: Container(
                 margin:
-                    const EdgeInsets.symmetric(horizontal: 80, vertical: 50),
+                    const EdgeInsets.symmetric(horizontal: 70, vertical: 50),
                 padding: const EdgeInsets.all(10),
                 // height: 100,
                 decoration: BoxDecoration(
@@ -108,7 +108,12 @@ class ResultScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.home),
-        onPressed: () => Navigator.pushNamed(context, HomeScreen.routeName),
+        onPressed: () => Navigator.pushNamedAndRemoveUntil(
+          context,
+          HomeScreen.routeName,
+          (r) => false,
+        ),
+        // onPressed: () => Navigator.pushNamed(context, HomeScreen.routeName),
       ),
     );
   }

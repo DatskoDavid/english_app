@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-
 import '../../data/get_word_service.dart';
-import '../../domain/models/hive/word.dart';
 
 class AddWordDialog extends StatefulWidget {
   AddWordDialog({Key? key}) : super(key: key);
@@ -111,12 +108,13 @@ class _AddWordDialogState extends State<AddWordDialog> {
             onPressed: () async {
               await checkWord(_wordController.text);
               if (_formKey.currentState!.validate()) {
-                final box = Hive.box<Word>('words_box');
+                //TODO: make validation via network
+                /* final box = Hive.box<Word>('words_box');
                 box.add(
                   Word(
                       id: DateTime.now().toString(),
                       word: _wordController.text),
-                );
+                ); */
                 Navigator.pop(context);
               }
             },

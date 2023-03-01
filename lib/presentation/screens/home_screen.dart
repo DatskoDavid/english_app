@@ -1,11 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nice_buttons/nice_buttons.dart';
 
-import '../../client/hive_names.dart';
-import '../../domain/models/hive/word.dart';
+import 'true_training_mode/training_controller.dart';
 import 'vocabulary_screen.dart';
 import 'word_info_screen.dart';
 
@@ -31,7 +27,7 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 10),
           _getButton('Vocabulary', context, VocabularyScreen.routeName),
           const SizedBox(height: 3),
-          _getButton('Training words', context, WordInfoScreen.routeName),
+          _getButton('Training words', context, TrainingController.routeName),
           const SizedBox(height: 10),
           _settingsButton(context, ''),
           /* const SizedBox(height: 50),
@@ -151,12 +147,17 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  String _randomWord() {
+  //TODO: remake in order to get words via bloc
+  /* String _randomWord() {
     final vocabularySize = Hive.box<Word>(BoxNames.words).length;
     final random = Random();
 
     final randomIndex = random.nextInt(vocabularySize);
 
     return Hive.box<Word>(BoxNames.words).getAt(randomIndex)!.word!;
+  } */
+
+  String _randomWord() {
+    return 'permit';
   }
 }
