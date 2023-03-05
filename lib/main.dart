@@ -73,18 +73,14 @@ class _MyAppState extends State<MyApp> {
             builder: (context) => QuizScreen(word: word),
           );
         } else if (settings.name == InputWordScreen.routeName) {
-          final trainingInformation = settings.arguments as TrainingInfo;
+          //final trainingInformation = settings.arguments as TrainingInfo;
 
           return MaterialPageRoute(
-            builder: (context) =>
-                InputWordScreen(trainingInfo: trainingInformation),
+            builder: (context) => InputWordScreen(),
           );
         } else if (settings.name == ResultScreen.routeName) {
-          final trainingInformation = settings.arguments as TrainingInfo;
-
           return MaterialPageRoute(
-            builder: (context) =>
-                ResultScreen(trainingInfo: trainingInformation),
+            builder: (context) => ResultScreen(),
           );
         } else if (settings.name == TrainingController.routeName) {
           return MaterialPageRoute(

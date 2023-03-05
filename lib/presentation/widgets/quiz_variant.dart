@@ -4,7 +4,7 @@ class QuizVariant extends StatefulWidget {
   final String variant;
   final bool isCorrect;
   final Function onTapHandler;
-  bool showCorrectAnswer;
+  final bool showCorrectAnswer;
 
   QuizVariant({
     super.key,
@@ -21,7 +21,7 @@ class QuizVariant extends StatefulWidget {
 class _QuizVariantState extends State<QuizVariant> {
   bool isPressed = false;
 
-  Color getColor() {
+  Color get getColor {
     if (widget.isCorrect && isPressed ||
         widget.isCorrect && widget.showCorrectAnswer) {
       return Colors.green;
@@ -37,7 +37,7 @@ class _QuizVariantState extends State<QuizVariant> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 1000),
       decoration: BoxDecoration(
-        color: getColor(),
+        color: getColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Material(
@@ -48,7 +48,7 @@ class _QuizVariantState extends State<QuizVariant> {
           splashColor: const Color.fromARGB(255, 131, 118, 118),
           onTap: (() {
             isPressed = true;
-            widget.onTapHandler(widget.variant);
+            widget.onTapHandler();
           }),
           child: Center(
             child: Padding(

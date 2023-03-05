@@ -37,7 +37,7 @@ class _QuizBodyState extends State<QuizBody> {
 
   @override
   void initState() {
-    _bloc = i.get<QuizBloc>()..add(InitWords(widget.wordApi.word));
+    _bloc = i.get<QuizBloc>()..add(InitVariants(widget.wordApi.word));
     super.initState();
   }
 

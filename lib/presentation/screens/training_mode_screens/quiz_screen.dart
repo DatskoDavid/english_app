@@ -7,8 +7,8 @@ import '../../blocs/quiz_bloc/quiz_bloc.dart';
 import '../../blocs/quiz_bloc/quiz_event.dart';
 import '../../blocs/quiz_bloc/quiz_state.dart';
 import '../../di/injector.dart';
-import '../../widgets/quiz_variant.dart';
 import '../../widgets/next_screen_btn.dart';
+import '../../widgets/quiz_variant.dart';
 import 'input_word_screen.dart';
 
 class QuizScreen extends StatefulWidget {
@@ -23,17 +23,17 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  late TrainingInfo trainingInfo = TrainingInfo(word: widget.word);
+  // late final currentTrainingInfo = TrainingInfo(word: widget.word);
   late final QuizBloc _bloc;
 
   @override
   void initState() {
     // generateRandomVariants();
-    _bloc = i.get<QuizBloc>()..add(InitWords(widget.word.word));
+    _bloc = i.get<QuizBloc>()..add(InitVariants(widget.word.word));
     super.initState();
   }
 
-  bool isChoosedAnswer = false;
+  // bool isChoosedAnswer = false;
 
   //TODO: return to generation
   /* List<String> variants = <String>[
@@ -43,14 +43,14 @@ class _QuizScreenState extends State<QuizScreen> {
     'persuade', */
   ]; */
 
-  bool isCorrect(String variant) => variant == widget.word.word;
+  // bool isCorrect(String variant) => variant == widget.word.word;
 
   void showRightAnswer(String choosedAnswer) {
-    trainingInfo = trainingInfo.copyWith(quizChosenAnswer: choosedAnswer);
+    // trainingInfo = trainingInfo.copyWith(quizChosenAnswer: choosedAnswer);
 
-    setState(() {
+    /*  setState(() {
       isChoosedAnswer = true;
-    });
+    }); */
   }
 
   @override
@@ -85,14 +85,36 @@ class _QuizScreenState extends State<QuizScreen> {
             BlocBuilder<QuizBloc, QuizState>(
               bloc: _bloc,
               builder: (context, state) {
+                // final trainingInfoTempList = <TrainingInfo>[];
+                // trainingInfoTempList.add(currentTrainingInfo);
+
+                //state.copyWith(trainingInfoList: trainingInfoTempList);
+
                 return ListView.separated(
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
+                    /* final trainingInfoTempList = <TrainingInfo>[];
+
+                    for (var i = 0; i < state.variants.length; i++) {
+                      final trainingInfo = TrainingInfo(word: widget.word);
+                      trainingInfoTempList.add(trainingInfo);
+                    }
+
+                    state.copyWith(trainingInfoList: trainingInfoTempList); */
+
                     return QuizVariant(
                       variant: state.variants[index],
-                      isCorrect: isCorrect(state.variants[index]),
-                      onTapHandler: isChoosedAnswer ? () {} : showRightAnswer,
-                      showCorrectAnswer: isChoosedAnswer,
+                      // isCorrect: isCorrect(state.variants[index]),
+                      isCorrect: state.trainingInfo?.word.word ==
+                          state.variants[index],
+                      // onTapHandler: state.isChoosedAnswer ? () {} : showRightAnswer,
+                      onTapHandler: () => _bloc.add(
+                        OnVariantTap(
+                          choosedVariant: state.variants[index],
+                          // trainingInfo: currentTrainingInfo,
+                        ),
+                      ),
+                      showCorrectAnswer: state.isChoosedAnswer,
                     );
                     /* return QuizVariant(
                       variant: variants[index],
@@ -110,7 +132,7 @@ class _QuizScreenState extends State<QuizScreen> {
             const SizedBox(height: 20),
             NextScreenBtn(
               routeName: InputWordScreen.routeName,
-              arguments: trainingInfo,
+              // arguments: currentTrainingInfo,
             ),
           ],
         ),

@@ -3,24 +3,33 @@ import 'package:equatable/equatable.dart';
 import '../../../domain/models/training_info.dart';
 
 class QuizState extends Equatable {
-  final List<String> variants;
+  final bool isChoosedAnswer;
+  final bool isEnterdWord;
 
-  final List<TrainingInfo> trainingInfoList;
+  final List<String> variants;
+  // final List<TrainingInfo> trainingInfoList;
+  final TrainingInfo? trainingInfo;
 
   const QuizState({
+    required this.isChoosedAnswer,
+    required this.isEnterdWord,
     required this.variants,
-    required this.trainingInfoList,
+    required this.trainingInfo,
   });
 
   QuizState copyWith({
+    bool? isChoosedAnswer,
+    bool? isEnterdWord,
     List<String>? variants,
-    List<TrainingInfo>? trainingInfoList,
+    TrainingInfo? trainingInfo,
   }) =>
       QuizState(
+        isChoosedAnswer: isChoosedAnswer ?? this.isChoosedAnswer,
+        isEnterdWord: isEnterdWord ?? this.isEnterdWord,
         variants: variants ?? this.variants,
-        trainingInfoList: trainingInfoList ?? this.trainingInfoList,
+        trainingInfo: trainingInfo ?? this.trainingInfo,
       );
 
   @override
-  List<Object?> get props => [variants];
+  List<Object?> get props => [isChoosedAnswer, variants, trainingInfo];
 }

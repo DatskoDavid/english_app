@@ -26,6 +26,19 @@ class _TrainingControllerState extends State<TrainingController> {
     TrainingInfo(word: wordsApi[2]),
   ];
 
+  List<Widget> get getTraining {
+    return List.generate(traininginfoList.length * 2 + 1, (index) {
+      if (index < traininginfoList.length) {
+        return QuizBody(wordApi: wordsApi[index], key: UniqueKey());
+      } else if (index < traininginfoList.length * 2) {
+        final currentIndex = index - traininginfoList.length;
+        return InputWordBody(wordApi: wordsApi[currentIndex], key: UniqueKey());
+      } else {
+        return const ResultsBody();
+      }
+    });
+  }
+
   final questions = <Widget>[
     QuizBody(wordApi: wordsApi[0], key: UniqueKey()),
     QuizBody(wordApi: wordsApi[1], key: UniqueKey()),
@@ -42,6 +55,7 @@ class _TrainingControllerState extends State<TrainingController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: !_startTraining
           ? Center(
               child: ElevatedButton(
@@ -67,11 +81,22 @@ class _TrainingControllerState extends State<TrainingController> {
             )
           : Column(
               children: [
-                SizedBox(height: 400, child: questions[_questionNumber]),
+                // SizedBox(height: 400, child: questions[_questionNumber]),
+                SizedBox(height: 400, child: getTraining[_questionNumber]),
                 NextBtn(
-                  handler: () => setState(
+                  /* handler: () => setState(
                     () {
                       if (_questionNumber < questions.length - 1) {
+                        _questionNumber++;
+                      } else {
+                        _startTraining = false;
+                        _questionNumber = 0;
+                      }
+                    },
+                  ), */
+                  handler: () => setState(
+                    () {
+                      if (_questionNumber < getTraining.length - 1) {
                         _questionNumber++;
                       } else {
                         _startTraining = false;

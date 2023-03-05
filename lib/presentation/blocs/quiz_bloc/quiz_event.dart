@@ -7,14 +7,20 @@ abstract class QuizEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class InitWords extends QuizEvent {
+class InitVariants extends QuizEvent {
   final String currentWord;
 
-  InitWords(this.currentWord);
+  InitVariants(this.currentWord);
 }
 
-class ChooseAnswer extends QuizEvent {
-  final TrainingInfo trainingInfo;
+class OnVariantTap extends QuizEvent {
+  final String choosedVariant;
 
-  ChooseAnswer(this.trainingInfo);
+  OnVariantTap({required this.choosedVariant});
+}
+
+class CheckEnteredWord extends QuizEvent {
+  final String enteredWord;
+
+  CheckEnteredWord({required this.enteredWord});
 }
